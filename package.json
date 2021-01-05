@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/fosper/tgmlight/issues"
   },
-  "homepage": "https://github.com/fosper/tgmlight#readme"
+  "homepage": "https://github.com/fosper/tgmlight#readme",
+  "dependencies": {
+    "toolslight": "^1.0.7"
+  }
 }
