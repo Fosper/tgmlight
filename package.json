@@ -1,6 +1,6 @@
 {
   "name": "tgmlight",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Quickly and easily NodeJS interact with the Telegram Bot API.",
   "main": "index.js",
   "scripts": {
