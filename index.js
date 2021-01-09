@@ -53,9 +53,6 @@ class Tgmlight {
         if (typeof value[0] === 'string') {
             keyboardType = 'keyboard'
         } else {
-            console.log(value[0])
-            console.log(value[0].text)
-            console.log(value[0].requestContact)
             if (value[0].requestContact !== undefined || value[0].requestLocation !== undefined || value[0].requestPoll !== undefined) {
                 keyboardType = 'keyboard'
             }
