@@ -5,6 +5,7 @@ class Tgmlight {
         this.apiUrl = 'api.telegram.org'
         this.contentType = 'application/json'
         this.botToken = ''
+        this.messageType = 'sendMessage'
         this.requestOptions = {}
     }
     
@@ -39,13 +40,22 @@ class Tgmlight {
         return this.botToken
     }
 
+    setRequestOptions = (value) => {
+        this.requestOptions = value
+        return this
+    }
+
+    getRequestOptions = () => {
+        return this.requestOptions
+    }
+
     setMessageType = (value) => {
-        this.requestOptions.messageType = value
+        this.messageType = value
         return this
     }
     
     getMessageType = () => {
-        return this.requestOptions.messageType
+        return this.messageType
     }
 
     addKeyboardRow = (value) => {
@@ -140,6 +150,24 @@ class Tgmlight {
         return this.requestOptions.chat_id
     }
 
+    setMessageId = (value) => {
+        this.requestOptions.message_id = value
+        return this
+    }
+    
+    getMessageId = () => {
+        return this.requestOptions.message_id
+    }
+
+    setInlineMessageId = (value) => {
+        this.requestOptions.inline_message_id = value
+        return this
+    }
+    
+    getInlineMessageId = () => {
+        return this.requestOptions.inline_message_id
+    }
+
     setText = (value) => {
         this.requestOptions.text = value
         return this
@@ -156,6 +184,15 @@ class Tgmlight {
     
     getParseMode = () => {
         return this.requestOptions.parse_mode
+    }
+
+    setEntities = (value) => {
+        this.requestOptions.entities = value
+        return this
+    }
+    
+    getEntities = () => {
+        return this.requestOptions.entities
     }
 
     setDisableWebPagePreview = (value = true) => {
@@ -238,7 +275,7 @@ class Tgmlight {
     */
 
     send = () => {
-        return this[this.requestOptions.messageType]()
+        return this[this.messageType]()
     }
 
     /*
@@ -276,7 +313,7 @@ class Tgmlight {
             protocol: 'https', // Can be 'http', 'https', 'ws', 'wss'.
             host: 'api.telegram.org',
             port: 443,
-            path: '/bot' + this.botToken + '/sendMessage',
+            path: '/bot' + this.botToken + '/' + this.messageType,
             headers: {'Content-Type': this.contentType},
             body: JSON.stringify(body),
         }
@@ -295,4 +332,5 @@ class Tgmlight {
 
 module.exports = Tgmlight
 
+require('./Methods/editMessageText.js');
 require('./Methods/sendMessage.js');
