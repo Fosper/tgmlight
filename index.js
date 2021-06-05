@@ -127,14 +127,6 @@ class Tgmlight {
         this.setReplyMarkup(replyMarkup)
 
         return this
-
-        // url
-        // login_url
-        // callback_data
-        // switch_inline_query
-        // switch_inline_query_current_chat
-        // callback_game
-        // pay
     }
 
     /*
@@ -159,6 +151,15 @@ class Tgmlight {
         return this.requestOptions.message_id
     }
 
+    setGameShortName = (value) => {
+        this.requestOptions.game_short_name = value
+        return this
+    }
+    
+    getGameShortName = () => {
+        return this.requestOptions.game_short_name
+    }
+
     setInlineMessageId = (value) => {
         this.requestOptions.inline_message_id = value
         return this
@@ -175,6 +176,33 @@ class Tgmlight {
     
     getText = () => {
         return this.requestOptions.text
+    }
+
+    setUrl = (value) => {
+        this.requestOptions.url = value
+        return this
+    }
+    
+    getUrl = () => {
+        return this.requestOptions.url
+    }
+    
+    setCacheTime = (value) => {
+        this.requestOptions.cache_time = value
+        return this
+    }
+    
+    getCacheTime = () => {
+        return this.requestOptions.cache_time
+    }
+
+    setCallbackQueryId = (value) => {
+        this.requestOptions.callback_query_id = value
+        return this
+    }
+    
+    getCallbackQueryId = () => {
+        return this.requestOptions.callback_query_id
     }
 
     setParseMode = (value) => {
@@ -211,6 +239,15 @@ class Tgmlight {
 
     getDisableNotification = () => {
         return this.requestOptions.disable_notification
+    }
+
+    setAllowSendingWithoutReply = (value = true) => {
+        this.requestOptions.allow_sending_without_reply = value
+        return this
+    }
+
+    getAllowSendingWithoutReply = () => {
+        return this.requestOptions.allow_sending_without_reply
     }
 
     setReplyToMessageId = (value) => {
@@ -256,6 +293,15 @@ class Tgmlight {
 
     getSelective = () => {
         return this.requestOptions.reply_markup.selective
+    }
+
+    setShowAlert = (value = true) => {
+        this.requestOptions.show_alert = value
+        return this
+    }
+
+    getShowAlert = () => {
+        return this.requestOptions.show_alert
     }
 
     setReplyMarkup = (value) => {
@@ -309,15 +355,15 @@ class Tgmlight {
         }
 
         let requestOptions = {
-            method: 'POST', // Can be 'GET', 'POST', 'PUT', 'DELETE', 'CONNECT'.
-            protocol: 'https', // Can be 'http', 'https', 'ws', 'wss'.
+            method: 'POST',
+            protocol: 'https',
             host: 'api.telegram.org',
             port: 443,
             path: '/bot' + this.botToken + '/' + this.messageType,
             headers: {'Content-Type': this.contentType},
             body: JSON.stringify(body),
         }
-      
+
         let err, data
         [err, data] = await tl.request(requestOptions)
         if (err) {
@@ -332,5 +378,7 @@ class Tgmlight {
 
 module.exports = Tgmlight
 
-require('./Methods/editMessageText.js');
-require('./Methods/sendMessage.js');
+require('./Methods/answerCallbackQuery.js')
+require('./Methods/editMessageText.js')
+require('./Methods/sendGame.js')
+require('./Methods/sendMessage.js')

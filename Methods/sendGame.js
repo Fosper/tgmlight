@@ -9,16 +9,16 @@ const Tgmlight = require('../index.js')
     tgm
     .setBotToken('1234567890:AbCdEfGhIjKlMnOpQrStUvWxYz')
     .setChatId('9876543210')
-    .setText('Hello world!')
+    .setGameShortName('gameshortname')
     .setDisableNotification()
     .addKeyboardRow([
-        {text: 'Button-1', callbackData: 'ButtonOne'},
-        {text: 'Button-2', callbackData: 'ButtonTwo'},
+        {text: 'Play!', callbackGame: {}},
+        {text: 'Share', switchInlineQuery: ' cool bot! Join to us!'},
     ])
     .addKeyboardRow([
-        {text: 'Button-3', callbackData: 'ButtonThree'},
+        {text: 'My site', url: 'https://example.com'},
     ])
-    .sendMessage()
+    .sendGame()
 
     
     [Example-2]:
@@ -26,30 +26,27 @@ const Tgmlight = require('../index.js')
     const tgmlight = require('tgmlight')
     let tgm = new tgmlight
     tgm.setBotToken('1234567890:AbCdEfGhIjKlMnOpQrStUvWxYz')
-    tgm.setMessageType('sendMessage')
+    tgm.setMessageType('sendGame')
     tgm.setChatId('9876543210')
-    tgm.setText('Hello world!')
+    tgm.setGameShortName('gameshortname')
     tgm.setDisableNotification()
     tgm.addKeyboardRow([
-        {text: 'Button-1'},
-        {text: 'Button-2'},
+        {text: 'Play!', callbackGame: {}},
+        {text: 'Share', switchInlineQuery: ' cool bot! Join to us!'},
     ])
     tgm.addKeyboardRow([
-        {text: 'Button-3'},
+        {text: 'My site', url: 'https://example.com'},
     ])
     tgm.send()
 */
 
-Tgmlight.prototype.sendMessage = function() {
+Tgmlight.prototype.sendGame = function() {
 
     let result = ''
 
     let parameters = [
         'chat_id', // Default: none. Required: yes. Type: Integer or String.
-        'text', // Default: none. Required: yes. Type: String.
-        'parse_mode', // Default: 'Markdown'. Required: no. Type: String.
-        'entities', // Default: none. Required: no. Type: Array of MessageEntity.
-        'disable_web_page_preview', // Default: false. Required: no. Type: Boolean.
+        'game_short_name', // Default: none. Required: yes. Type: String.
         'disable_notification', // Default: false. Required: no. Type: Boolean.
         'reply_to_message_id', // Default: none. Required: no. Type: Integer.
         'allow_sending_without_reply', // Default: false. Required: no. Type: Boolean.
