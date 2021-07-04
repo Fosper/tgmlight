@@ -1,4 +1,6 @@
 const tl = require('toolslight')
+const stream = require('stream')
+const fs = require('fs')
 
 class Tgmlight {
     constructor() {
@@ -178,6 +180,42 @@ class Tgmlight {
         return this.requestOptions.text
     }
 
+    setDocument = (value) => {
+        this.requestOptions.document = value
+        return this
+    }
+
+    getDocument = () => {
+        return this.requestOptions.document
+    }
+
+    setThumb = (value) => {
+        this.requestOptions.thumb = value
+        return this
+    }
+
+    getThumb = () => {
+        return this.requestOptions.thumb
+    }
+
+    setCaption = (value) => {
+        this.requestOptions.caption = value
+        return this
+    }
+
+    getCaption = () => {
+        return this.requestOptions.caption
+    }
+
+    setCaptionEntities = (value) => {
+        this.requestOptions.caption_entities = value
+        return this
+    }
+
+    getCaptionEntities = () => {
+        return this.requestOptions.caption_entities
+    }
+
     setUrl = (value) => {
         this.requestOptions.url = value
         return this
@@ -211,7 +249,7 @@ class Tgmlight {
     }
     
     getParseMode = () => {
-        return this.requestOptions.parse_mode
+        return this.requestOptions.parse_mode ? this.requestOptions.parse_mode : 'Markdown'
     }
 
     setEntities = (value) => {
@@ -230,6 +268,15 @@ class Tgmlight {
 
     getDisableWebPagePreview = () => {
         return this.requestOptions.disable_web_page_preview
+    }
+
+    setDisableContentTypeDetection = (value = true) => {
+        this.requestOptions.disable_content_type_detection = value
+        return this
+    }
+
+    getDisableContentTypeDetection = () => {
+        return this.requestOptions.disable_content_type_detection
     }
 
     setDisableNotification = (value = true) => {
@@ -329,10 +376,17 @@ class Tgmlight {
     */
 
     request = async (parameters) => {
+        let requestOptions = {
+            method: 'POST',
+            protocol: 'https',
+            host: 'api.telegram.org',
+            port: 443,
+            path: '/bot' + this.botToken + '/' + this.messageType,
+            headers: {}
+        }
 
-        let result = ''
-        
         let body = {}
+        let isFormData = false
 
         for (const parameter of parameters) {
             let func = parameter.replace(/([-_][a-z])/ig, ($1) => {
@@ -342,37 +396,66 @@ class Tgmlight {
             })
             func = 'get' + func.charAt(0).toUpperCase() + func.slice(1)
             if (!tl.isEmpty(this[func])) {
-
+                let funcRes
                 switch (func) {
+                    case 'getDocument':
+                        funcRes = this[func]()
+                        if (funcRes instanceof stream.Readable) {
+                            isFormData = true
+                        }
+                        break
                     case 'getReplyMarkup':
-                        body[parameter] = JSON.stringify(this[func]())
+                        funcRes = this[func]()
+                        if (!tl.isEmpty(funcRes)) {
+                            funcRes = JSON.stringify(funcRes)
+                        } else {
+                            continue
+                        }
+                        break
+                    case 'getCaption':
+                        funcRes = this[func]()
+                        if (!funcRes) {
+                            funcRes = this.getText()
+                            if (!funcRes) {
+                                continue
+                            }
+                        }
                         break
                     default:
-                        body[parameter] = this[func]()
+                        funcRes = funcRes = this[func]()
                         break
+                }
+                if (funcRes !== undefined) {
+                    body[parameter] = funcRes
                 }
             }
         }
 
-        let requestOptions = {
-            method: 'POST',
-            protocol: 'https',
-            host: 'api.telegram.org',
-            port: 443,
-            path: '/bot' + this.botToken + '/' + this.messageType,
-            headers: {'Content-Type': this.contentType},
-            body: JSON.stringify(body),
+        if (!isFormData) {
+            requestOptions.headers['Content-Type'] = this.contentType
+        }
+
+        if (isFormData) {
+            requestOptions.formData = {}
+            for (const bodyName in body) {
+                let bodyValue = body[bodyName]
+
+                if (typeof(bodyValue) === 'string' && bodyValue.includes('/')) {
+                    requestOptions.formData[bodyName] = fs.createReadStream(bodyValue)
+                } else {
+                    requestOptions.formData[bodyName] = bodyValue
+                }
+            }
+        } else {
+            requestOptions.body = JSON.stringify(body)
         }
 
         let err, data
         [err, data] = await tl.request(requestOptions)
         if (err) {
-            result = err
-        } else {
-            result = data
+            return err
         }
-
-        return result
+        return data
     }
 }
 
@@ -380,5 +463,6 @@ module.exports = Tgmlight
 
 require('./Methods/answerCallbackQuery.js')
 require('./Methods/editMessageText.js')
+require('./Methods/sendDocument.js')
 require('./Methods/sendGame.js')
 require('./Methods/sendMessage.js')
