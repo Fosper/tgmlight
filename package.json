@@ -27,6 +27,6 @@
   },
   "homepage": "https://github.com/fosper/tgmlight#readme",
   "dependencies": {
-    "toolslight": "^1.0.7"
+    "toolslight": "^2.0.0"
   }
 }
