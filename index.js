@@ -123,6 +123,8 @@ class Tgmlight {
         let replyMarkup = this.getReplyMarkup()
         if (Object.prototype.toString.call(replyMarkup[keyboardType]) !== '[object Array]') {
             replyMarkup[keyboardType] = []
+        } else if (!replyMarkup[keyboardType].length) {
+            replyMarkup[keyboardType] = []
         }
         replyMarkup[keyboardType].push(keyboardRow)
 
